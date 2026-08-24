@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model records {
+  id          Int      @id
+  postid      Int
+  name        String   @db.VarChar(255)
+  email       String   @db.VarChar(255)
+  pendingdata Json?
+  version     Int      @default(1)
+  createdat   DateTime @default(now()) @db.Timestamp(6)
+  updatedat   DateTime @default(now()) @db.Timestamp(6)
+  updatedby   String?  @db.Uuid
+  users       users?   @relation(fields: [updatedby], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @db.VarChar(100)
+  email     String    @unique @db.VarChar(255)
+  password  String
+  createdat DateTime  @default(now()) @db.Timestamp(6)
+  updatedat DateTime  @default(now()) @db.Timestamp(6)
+  records   records[]
+}
