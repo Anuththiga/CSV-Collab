@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../database';
 
 class Post extends Model {
-  declare id: string;
-  declare postId: string;
+  declare id: number;
+  declare postId: number;
   declare name: string;
   declare email: string;
   declare pendingData: string | null;

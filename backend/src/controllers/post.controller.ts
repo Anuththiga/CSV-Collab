@@ -33,11 +33,6 @@ const getPost = async (
                 [Op.iLike]: `%${search}%`,
               },
             },
-            {
-              postId: {
-                [Op.iLike]: `%${search}%`,
-              },
-            },
           ],
         }
       : undefined;
