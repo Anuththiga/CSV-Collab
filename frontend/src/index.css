@@ -11,6 +11,28 @@ body {
   padding: 24px;
 }
 
+/* Search */
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-container input {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: #555;
+}
+
+/* Table */
+
 .table-container {
   width: 100%;
   overflow-x: auto;
@@ -33,6 +55,8 @@ th {
   font-weight: 600;
 }
 
+/* Pagination */
+
 .pagination {
   display: flex;
   align-items: center;
@@ -51,9 +75,13 @@ th {
   opacity: 0.5;
 }
 
+/* Error */
+
 .error {
   color: red;
 }
+
+/* Responsive */
 
 @media (max-width: 768px) {
   .posts-page {

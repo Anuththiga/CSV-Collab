@@ -1,6 +1,6 @@
 export interface Post {
   id: number;
-  postId: string;
+  postId: number;
   name: string;
   email: string;
   pendingData: string | null;
@@ -14,7 +14,7 @@ export interface Pagination {
   page: number;
   limit: number;
   total: number;
-  totalPage: number;
+  totalPages: number;
 }
 
 export interface PostResponse {
@@ -26,10 +26,20 @@ const API_URL = 'http://localhost:8080/api';
 
 export const getPosts = async (
   page: number,
-  limit: number
+  limit: number,
+  search: string
 ): Promise<PostResponse> => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  if (search.trim()) {
+    params.set('search', search.trim());
+  }
+
   const response = await fetch(
-    `${API_URL}/posts?page=${page}&limit=${limit}`
+    `${API_URL}/posts?${params.toString()}`
   );
 
   if (!response.ok) {
