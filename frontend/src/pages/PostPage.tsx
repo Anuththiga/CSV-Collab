@@ -14,6 +14,7 @@ const PostsPage = () => {
     useState<Pagination | null>(null);
 
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,9 +27,12 @@ const PostsPage = () => {
         setLoading(true);
         setError('');
 
-        const response = await getPosts(page, limit);
+        const response = await getPosts(
+          page,
+          limit,
+          search
+        );
 
-        
         setPosts(response.data);
         setPagination(response.pagination);
       } catch (error) {
@@ -43,12 +47,27 @@ const PostsPage = () => {
     };
 
     fetchPosts();
-  }, [page]);
+  }, [page, search]);
 
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearch(event.target.value);
+    setPage(1);
+  };
 
   return (
     <div className="posts-page">
       <h1>Posts</h1>
+
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search by name, email"
+          value={search}
+          onChange={handleSearch}
+        />
+      </div>
 
       {loading && <p>Loading...</p>}
 
@@ -75,12 +94,13 @@ const PostsPage = () => {
 
               <span>
                 Page {pagination.page} of{' '}
-                {pagination.totalPage}
+                {pagination.totalPages}
               </span>
 
               <button
                 disabled={
-                  page === pagination.totalPage
+                  page === pagination.totalPages ||
+                  pagination.totalPages === 0
                 }
                 onClick={() =>
                   setPage((current) => current + 1)
