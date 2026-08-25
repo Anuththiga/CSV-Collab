@@ -6,26 +6,33 @@ const getPost = async (
   res: Response
 ): Promise<void> => {
   try {
-    const posts = await Post.findAll({
-      attributes: [
-        'id',
-        'postId',
-        'name',
-        'email',
-        'pendingData',
-        'version',
-        'createdAt',
-        'updatedAt',
-        'updatedBy',
-      ],
+    const page = Math.max(Number(req.query.page) || 1, 1);
+    const limit = Math.min(
+        Math.max(Number(req.query.limit) || 10, 1),
+        100
+    );
+
+    const offset = (page - 1) * limit;
+    const { rows, count } = await Post.findAndCountAll({
+        limit,
+        offset,
+        order: [['id', 'ASC']],
     });
 
-    res.status(200).json(posts);
+    res.status(200).json({
+        data: rows,
+        pagination: {
+            page,
+            limit,
+            total: count,
+            totalPage: Math.ceil(count / limit),
+        },
+    });
   } catch (err: unknown) {
     const message =
       err instanceof Error
         ? err.message
-        : 'There was an error while retrieving posts from the database.';
+        : 'Failed to retrieve posts.';
 
     res.status(500).json({
       message,
