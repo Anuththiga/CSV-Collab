@@ -1,4 +1,4 @@
-const HOST = "10.204.133.84";
+const HOST = 'localhost';
 const USER = "postgres";
 const PASSWORD = "";
 const DB = "csv_uploader";

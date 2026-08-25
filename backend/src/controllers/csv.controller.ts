@@ -5,7 +5,8 @@ import { parse } from 'fast-csv';
 import Post from '../models/post.model.js';
 
 interface PostCsvRecord {
-  postId: string;
+  id: number;
+  postId: number;
   name: string;
   email: string;
   pendingData?: string | null;
@@ -18,6 +19,7 @@ const upload = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log("oooo", req)
     if (!req.file) {
       res.status(400).json({
         message: 'Please upload a CSV file!',
@@ -48,12 +50,13 @@ const upload = async (
       .on('end', async () => {
         try {
           const posts = rows.map((row) => ({
+            id: row.id,
             postId: row.postId,
             name: row.name,
             email: row.email,
             pendingData: row.pendingData ?? null,
             version: row.version ?? 1,
-            updatedBy: row.updatedBy,
+            updatedBy: 'admin',
           }));
 
           await Post.bulkCreate(posts);
