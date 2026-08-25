@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Post from '../models/post.model.js';
+import { Op } from 'sequelize';
 
 const getPost = async (
   req: Request,
@@ -12,27 +13,57 @@ const getPost = async (
         100
     );
 
+    const search =
+      typeof req.query.search === 'string'
+        ? req.query.search.trim()
+        : '';
+
     const offset = (page - 1) * limit;
-    const { rows, count } = await Post.findAndCountAll({
+
+    const where = search
+      ? {
+          [Op.or]: [
+            {
+              name: {
+                [Op.iLike]: `%${search}%`,
+              },
+            },
+            {
+              email: {
+                [Op.iLike]: `%${search}%`,
+              },
+            },
+            {
+              postId: {
+                [Op.iLike]: `%${search}%`,
+              },
+            },
+          ],
+        }
+      : undefined;
+
+    const { rows, count } =
+      await Post.findAndCountAll({
+        where,
         limit,
         offset,
         order: [['id', 'ASC']],
-    });
+      });
 
     res.status(200).json({
-        data: rows,
-        pagination: {
-            page,
-            limit,
-            total: count,
-            totalPage: Math.ceil(count / limit),
-        },
+      data: rows,
+      pagination: {
+        page,
+        limit,
+        total: count,
+        totalPages: Math.ceil(count / limit),
+      },
     });
-  } catch (err: unknown) {
+  } catch (error: unknown) {
     const message =
-      err instanceof Error
-        ? err.message
-        : 'Failed to retrieve posts.';
+      error instanceof Error
+        ? error.message
+        : 'Failed to retrieve posts';
 
     res.status(500).json({
       message,
