@@ -1,4 +1,4 @@
-interface csvRecord {
+export interface csvRecord {
     id: string;
     postId: string;
     name: string;
