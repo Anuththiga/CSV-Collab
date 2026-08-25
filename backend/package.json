@@ -4,7 +4,7 @@
   "description": "CSV Collab",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/app.ts",
+    "dev": "tsx watch src/app.ts",
     "test": "yes"
   },
   "repository": {
