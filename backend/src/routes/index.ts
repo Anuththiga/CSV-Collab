@@ -2,7 +2,10 @@ import { Router } from 'express';
 
 import uploadFile from '../middlewares/upload.middleware';
 import csvController from '../controllers/csv.controller';
-import getPost from '../controllers/post.controller';
+import {
+  getPost,
+  updatePost
+ } from '../controllers/post.controller';
 
 const router = Router();
 
@@ -11,6 +14,7 @@ router.post(
   uploadFile.single('file'),
   csvController.upload
 );
+router.put('/posts/:id', updatePost);
 
 router.get('/posts', getPost);
 
