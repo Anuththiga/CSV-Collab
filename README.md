@@ -19,7 +19,6 @@ A full-stack web application for uploading CSV files, storing the data in Postgr
 * TypeScript
 * Sequelize
 * Socket.IO
-* fast-csv
 * Multer
 
 ### Database
