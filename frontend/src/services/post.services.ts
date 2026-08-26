@@ -48,3 +48,65 @@ export const getPosts = async (
 
   return response.json();
 };
+
+export interface ConflictData {
+    current: Post;
+    requested: {
+        name: string;
+        email: string;
+        version: number;
+    };
+}
+
+export class ConflictError extends Error {
+    conflictData: ConflictData;
+
+    constructor(
+        message: string,
+        conflictData: ConflictData
+    ) {
+        super(message);
+        this.name = 'ConflictError';
+        this.conflictData = conflictData;
+    }
+}
+
+export const updatePost = async (
+    id: number,
+    name: string,
+    email: string,
+    version: number
+): Promise<Post> => {
+    const response = await fetch(
+        `${API_URL}/posts/${id}`,
+        {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                version,
+            }),
+        }
+    );
+
+    const result = await response.json();
+
+    if (response.status === 409) {
+        throw new ConflictError(
+            result.message,
+            result.data
+        );
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            result.message ||
+            'Failed to update post'
+        );
+    }
+
+    return result.data;
+};

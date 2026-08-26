@@ -3,6 +3,7 @@ import cors from 'cors';
 import router from './routes/index.js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { setIO } from './socket.js'
 
 const app = express();
 
@@ -27,6 +28,8 @@ const io = new Server(server, {
     origin: 'http://localhost:5173',
   },
 });
+
+setIO(io);
 
 io.on('connection', (socket) => {
   console.log(`Client connected: ${socket.id}`);
